@@ -1,6 +1,26 @@
 use std::collections::HashMap;
 use std::io;
 
+// A clean, isolated function that handles the SET logic
+fn handle_set(store: &mut HashMap<String, String>, key: String, value: String) -> String {
+    store.insert(key, value);
+    String::from("OK")
+}
+
+fn handle_get(store: &HashMap<String, String>, key: String) -> String {
+    match store.get(&key) {
+        Some(val) => format!("\"{}\"", val),
+        None => String::from("(nil)"),
+    }
+}
+
+fn handle_remove(store: &mut HashMap<String, String>, key: String) -> String {
+    match store.remove(&key) {
+        Some(val) => format!("Removed: \"{}\"", val),
+        None => String::from("(nil)"),
+    }
+}
+
 fn main() {
     // Our 'Database' - a HashMap that maps Strings to Strings
     let mut store: HashMap<String, String> = HashMap::new();
@@ -30,8 +50,9 @@ fn main() {
                 if parts.len() == 3 {
                     let key = parts[1].to_string();
                     let value = parts[2].to_string();
-                    store.insert(key, value);
-                    println!("OK");
+                    
+                    let response = handle_set(&mut store, key, value);
+                    println!("{}", response);
                 } else {
                     println!("Error: SET requires a key and a value");
                 }
@@ -39,16 +60,18 @@ fn main() {
             "get" => {
                 if parts.len() == 2 {
                     let key = parts[1];
-                    match store.get(key) {
-                        Some(val) => println!("\"{}\"", val),
-                        None => println!("(nil)"),
-                    }
+                    let response = handle_get(&store, key.to_string());
+                    println!("{}", response);
+                } else {
+                    println!("Error: GET requires a key");
                 }
             }
             "remove" => {
                 if parts.len() == 2 {
-                    store.remove(parts[1]);
-                    println!("OK");
+                    let response = handle_remove(&mut store, parts[1].to_string());
+                    println!("{}", response);
+                } else {
+                    println!("Error: REMOVE requires a key");
                 }
             }
             "exit" => break,
