@@ -1,0 +1,8 @@
+# Block Rust's heavy compilation output folder
+/target
+
+# Block your local database log file (prevents committing actual data to github)
+# TODO
+
+# Block Mac operating system artifacts
+.DS_Store
