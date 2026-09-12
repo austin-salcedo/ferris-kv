@@ -1,22 +1,41 @@
 use std::collections::HashMap;
 use std::io;
+mod journal;
+
+const JOURNAL_PATH: &str = "journal.txt";
+const SET_CMD: &str = "SET";
+const GET_CMD: &str = "GET";
+const REMOVE_CMD: &str = "REMOVE";
 
 // A clean, isolated function that handles the SET logic
 fn handle_set(store: &mut HashMap<String, String>, key: String, value: String) -> String {
-    store.insert(key, value);
+    store.insert(key.clone(), value.clone());
+    if let Err(e) = journal::append_to_journal(JOURNAL_PATH, SET_CMD, &key, Some(&value)) {
+        eprintln!("Warning: Failed to persist to disk: {}", e)
+    }
     String::from("OK")
 }
 
 fn handle_get(store: &HashMap<String, String>, key: String) -> String {
     match store.get(&key) {
-        Some(val) => format!("\"{}\"", val),
+        Some(val) => {
+            if let Err(e) = journal::append_to_journal(JOURNAL_PATH, GET_CMD, &key, None) {
+                eprintln!("Warning: Failed to persist to disk: {}", e)
+            }
+            format!("\"{}\"", val)
+        },
         None => String::from("(nil)"),
     }
 }
 
 fn handle_remove(store: &mut HashMap<String, String>, key: String) -> String {
     match store.remove(&key) {
-        Some(val) => format!("Removed: \"{}\"", val),
+        Some(val) => {
+            if let Err(e) = journal::append_to_journal(JOURNAL_PATH, REMOVE_CMD, &key, None) {
+                eprintln!("Warning: Failed to persist to disk: {}", e)
+            }
+            format!("Removed: \"{}\"", val)
+        },
         None => String::from("(nil)"),
     }
 }
