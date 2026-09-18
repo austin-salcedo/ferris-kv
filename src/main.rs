@@ -4,7 +4,6 @@ mod journal;
 
 const JOURNAL_PATH: &str = "journal.txt";
 const SET_CMD: &str = "SET";
-const GET_CMD: &str = "GET";
 const REMOVE_CMD: &str = "REMOVE";
 
 // A clean, isolated function that handles the SET logic
@@ -18,12 +17,7 @@ fn handle_set(store: &mut HashMap<String, String>, key: String, value: String) -
 
 fn handle_get(store: &HashMap<String, String>, key: String) -> String {
     match store.get(&key) {
-        Some(val) => {
-            if let Err(e) = journal::append_to_journal(JOURNAL_PATH, GET_CMD, &key, None) {
-                eprintln!("Warning: Failed to persist to disk: {}", e)
-            }
-            format!("\"{}\"", val)
-        },
+        Some(val) => format!("\"{}\"", val),
         None => String::from("(nil)"),
     }
 }
