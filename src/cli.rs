@@ -2,8 +2,8 @@ use crate::JOURNAL_PATH;
 use crate::journal;
 use std::collections::HashMap;
 
-const SET_CMD: &str = "SET";
-const REMOVE_CMD: &str = "REMOVE";
+pub const SET_CMD: &str = "SET";
+pub const REMOVE_CMD: &str = "REMOVE";
 
 // A clean, isolated function that handles the SET logic
 pub fn handle_set(store: &mut HashMap<String, String>, key: String, value: String) -> String {

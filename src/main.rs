@@ -9,7 +9,14 @@ fn main() {
     // Our 'Database' - a HashMap that maps Strings to Strings
     let mut store: HashMap<String, String> = HashMap::new();
 
-    println!("Ferris-KV Version 0.1");
+    println!("Ferris-KV Version 0.2");
+
+    if let Err(e) = journal::restore_journal(JOURNAL_PATH, &mut store) {
+        eprintln!("Warning: error while restoring memory from previous run: {}", e);
+    } else {
+        println!("Successfully restored memory from previous run.")
+    };
+
     println!("Commands: SET key value | GET key | REMOVE key | EXIT");
 
     loop {
