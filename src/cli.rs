@@ -33,7 +33,10 @@ pub fn handle_remove(store: &mut HashMap<String, String>, key: String) -> String
     }
 }
 
-
+pub fn handle_exists(key: &str, store: &HashMap<String, String>) -> bool {
+    store
+        .contains_key(key)
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -83,4 +86,34 @@ mod tests {
         assert_eq!(map.get("target_key"), None);
         assert_eq!(map.len(), 0); // Confirms memory was cleanly freed
     }
+
+    #[test]
+fn test_handle_exists_returns_1_when_key_exists() {
+    let mut store = HashMap::new();
+    store.insert("name".to_string(), "austin".to_string());
+
+    let result = handle_exists("name", &store);
+
+    assert_eq!(result, true);
+}
+
+#[test]
+fn test_handle_exists_returns_0_when_key_does_not_exist() {
+    let store = HashMap::new();
+
+    let result = handle_exists("ghost", &store);
+
+    assert_eq!(result, false);
+}
+
+#[test]
+fn test_handle_exists_checks_key_not_value() {
+    let mut store = HashMap::new();
+    store.insert("name".to_string(), "austin".to_string());
+
+    let result = handle_exists("austin", &store);
+
+    assert_eq!(result, false);
+}
+
 }

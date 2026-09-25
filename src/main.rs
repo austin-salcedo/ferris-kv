@@ -17,7 +17,7 @@ fn main() {
         println!("Successfully restored memory from previous run.")
     };
 
-    println!("Commands: SET key value | GET key | REMOVE key | EXIT");
+    println!("Commands: SET <key> <value> | GET <key> | REMOVE <key> | EXISTS <key> | EXIT");
 
     loop {
         let mut input = String::new();
@@ -64,6 +64,16 @@ fn main() {
                 } else {
                     println!("Error: REMOVE requires a key");
                 }
+            }
+            "exists" => {
+                let key = parts[1];
+                let result = cli::handle_exists(key, &store);
+                let message = if result {
+                    "Yes"
+                } else {
+                    "No"
+                };
+                println!("{}", message);
             }
             "exit" => break,
             _ => println!("Unknown command"),
