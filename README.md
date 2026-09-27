@@ -55,7 +55,7 @@ Terminal Input
      ↓
 Command Parsing
      ↓
-SET / GET / REMOVE handlers
+SET / GET / REMOVE / EXISTS handlers
      ↓
 HashMap<String, String>
      ↓
